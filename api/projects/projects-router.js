@@ -16,4 +16,21 @@ router.get("/", (req, res) => {
     });
 });
 
+router.get('/:id', async (req, res) => {
+    try {
+        const task = await Project.get(req.params.id)
+        if (!task) {
+            res.status(404).json({
+                message: "Id not found"
+            })
+        } else {
+            res.json(task)
+        }
+    } catch (err) {
+        res.status(500).json({
+            message: "whoops sad path"
+        })
+    }
+})
+
 module.exports = router;
