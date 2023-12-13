@@ -34,26 +34,23 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  const { name, description } = req.body;
+  const { name, description, completed } = req.body;
   if (!name || !description) {
     return res.status(400).json({
       message: "Please provide a name and/or description",
     });
-  }
-
-  Project.insert({ name, description })
-    .then(({ id }) => {
-      return Project.get(id);
-    })
-    .then((project) => {
-      res.status(201).json(project);
-      console.log(project);
-    })
-    .catch((err) => {
-      res.status(500).json({
-        message: "whoops a doosie",
+  } else {
+    Project.insert({ name, description, completed })
+      .then((project) => {
+          res.status(201).json(project);
+        console.log(project);
+      })
+      .catch((err) => { //eslint-disable-line
+        res.status(500).json({
+          message: "whoops a doosie",
+        });
       });
-    });
+  }
 });
 
 module.exports = router;
