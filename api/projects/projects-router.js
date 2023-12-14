@@ -1,5 +1,6 @@
 const express = require("express");
 const Project = require("./projects-model");
+const validateUserId = require("./projects-middleware");
 
 const router = express.Router();
 
@@ -83,17 +84,10 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", validateUserId, async (req, res) => {
   try {
-    const project = await Project.get(req.params.id);
-    if (!project) {
-      res.status(404).json({
-        message: "The project with that ID does not exist.",
-      });
-    } else {
-      await Project.remove(req.params.id);
-      res.json(project);
-    }
+    await Project.remove(req.params.id);
+    res.status(200).json({ message: "Project deleted successfully" });
   } catch (error) {
     res.status(500).json({
       message: "An error occurred while deleting the project.",
