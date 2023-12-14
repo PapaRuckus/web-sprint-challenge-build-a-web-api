@@ -1,4 +1,3 @@
-// Write your "actions" router here!
 const express = require("express");
 const Actions = require("./actions-model");
 
@@ -11,7 +10,7 @@ router.get("/", (req, res) => {
     })
     .catch((err) => {
       res.status(500).json({
-        message: "You have found sad path",
+        message: "Oops! Something went wrong while fetching actions.",
       });
     });
 });
@@ -21,14 +20,14 @@ router.get("/:id", async (req, res) => {
     const actionId = await Actions.get(req.params.id);
     if (!actionId) {
       res.status(404).json({
-        message: " action Id not found",
+        message: "Action ID not found.",
       });
     } else {
       res.json(actionId);
     }
   } catch (error) {
     res.status(500).json({
-      message: "sad path :(",
+      message: "Oops! There was an error retrieving the action ID.",
     });
   }
 });
@@ -37,7 +36,7 @@ router.post("/", (req, res) => {
   const { notes, description, project_id } = req.body;
   if (!notes || !description || !project_id) {
     return res.status(400).json({
-      message: "Please provide notes and description",
+      message: "Please provide notes, description, and project ID.",
     });
   } else {
     Actions.insert({ notes, description, project_id })
@@ -46,7 +45,7 @@ router.post("/", (req, res) => {
       })
       .catch((err) => {
         res.status(500).json({
-          message: "this is where you want to be",
+          message: "An error occurred while adding the action.",
         });
       });
   }
@@ -59,17 +58,17 @@ router.put("/:id", async (req, res) => {
 
     if (!notes || !description || !project_id) {
       res.status(400).json({
-        message: "Please provide notes and description",
+        message: "Please provide notes, description, and project ID.",
       });
     } else if (!updatedAction) {
       res.status(404).json({
-        message: "Action with Id doesnt exist",
+        message: "Action with ID does not exist.",
       });
     } else {
       const updated = await Actions.update(req.params.id, req.body);
       if (!updated) {
         res.status(500).json({
-          message: "Failed yo update",
+          message: "Failed to update action.",
         });
       } else {
         const updatedAction = await Actions.get(req.params.id);
@@ -78,7 +77,25 @@ router.put("/:id", async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({
-      message: "Error in the update operation",
+      message: "Error in the update operation.",
+    });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const action = await Actions.get(req.params.id);
+    if (!action) {
+      res.status(404).json({
+        message: "Action with ID does not exist.",
+      });
+    } else {
+      await Actions.remove(req.params.id);
+      res.json(action);
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "An error occurred while deleting the action.",
     });
   }
 });

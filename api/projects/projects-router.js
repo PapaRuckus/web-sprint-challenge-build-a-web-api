@@ -1,4 +1,3 @@
-// Write your "projects" router here!
 const express = require("express");
 const Project = require("./projects-model");
 
@@ -11,7 +10,7 @@ router.get("/", (req, res) => {
     })
     .catch((err) => {
       res.status(500).json({
-        message: "You have hit the sad path",
+        message: "Oops! Something went wrong while fetching projects.",
       });
     });
 });
@@ -21,14 +20,14 @@ router.get("/:id", async (req, res) => {
     const task = await Project.get(req.params.id);
     if (!task) {
       res.status(404).json({
-        message: "Id not found",
+        message: "Project ID not found.",
       });
     } else {
       res.json(task);
     }
   } catch (err) {
     res.status(500).json({
-      message: "whoops sad path",
+      message: "Oops! There was an error retrieving the project ID.",
     });
   }
 });
@@ -37,7 +36,7 @@ router.post("/", (req, res) => {
   const { name, description, completed } = req.body;
   if (!name || !description) {
     return res.status(400).json({
-      message: "Please provide a name and description",
+      message: "Please provide a name and description.",
     });
   } else {
     Project.insert({ name, description, completed })
@@ -46,7 +45,7 @@ router.post("/", (req, res) => {
       })
       .catch((err) => {
         res.status(500).json({
-          message: "whoops a doosie",
+          message: "An error occurred while adding the project.",
         });
       });
   }
@@ -59,18 +58,18 @@ router.put("/:id", async (req, res) => {
 
     if (!name || !description || completed === undefined) {
       res.status(400).json({
-        message: "Missing name, description, and completed",
+        message: "Missing name, description, or completed status.",
       });
     } else if (!updatedProject) {
       res.status(404).json({
-        message: "Project with this id doesn't exist",
+        message: "Project with this ID doesn't exist.",
       });
     } else {
       const updated = await Project.update(req.params.id, req.body);
 
       if (!updated) {
         res.status(500).json({
-          message: "Failed to update the project",
+          message: "Failed to update the project.",
         });
       } else {
         const updatedProject = await Project.get(req.params.id);
@@ -79,7 +78,7 @@ router.put("/:id", async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({
-      message: "Error in the update operation",
+      message: "Error in the update operation.",
     });
   }
 });
@@ -89,7 +88,7 @@ router.delete("/:id", async (req, res) => {
     const project = await Project.get(req.params.id);
     if (!project) {
       res.status(404).json({
-        message: "The project with that ID does not exist",
+        message: "The project with that ID does not exist.",
       });
     } else {
       await Project.remove(req.params.id);
@@ -97,7 +96,7 @@ router.delete("/:id", async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({
-      message: "Whoops this is sad path delete",
+      message: "An error occurred while deleting the project.",
     });
   }
 });
@@ -107,7 +106,7 @@ router.get("/:id/actions", async (req, res) => {
     const project = await Project.get(req.params.id);
     if (!project) {
       res.status(404).json({
-        message: "The project with that ID does not exist",
+        message: "The project with that ID does not exist.",
       });
     } else {
       const action = await Project.getProjectActions(req.params.id);
@@ -115,7 +114,7 @@ router.get("/:id/actions", async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({
-      message: "uh oh",
+      message: "Oops! There was an error retrieving project actions.",
     });
   }
 });
