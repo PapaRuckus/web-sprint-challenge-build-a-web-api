@@ -16,4 +16,21 @@ router.get("/", (req, res) => {
     });
 });
 
+router.get("/:id", async (req, res) => {
+  try {
+    const actionId = await Actions.get(req.params.id);
+    if (!actionId) {
+      res.status(404).json({
+        message: " action Id not found",
+      });
+    } else {
+      res.json(actionId);
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "sad path :(",
+    });
+  }
+});
+
 module.exports = router;
