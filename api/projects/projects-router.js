@@ -37,13 +37,12 @@ router.post("/", (req, res) => {
   const { name, description, completed } = req.body;
   if (!name || !description) {
     return res.status(400).json({
-      message: "Please provide a name and/or description",
+      message: "Please provide a name and description",
     });
   } else {
     Project.insert({ name, description, completed })
       .then((project) => {
         res.status(201).json(project);
-        console.log(project);
       })
       .catch((err) => {
         res.status(500).json({
@@ -60,7 +59,7 @@ router.put("/:id", async (req, res) => {
 
     if (!name || !description || completed === undefined) {
       res.status(400).json({
-        message: "Missing name, description, and/or completed",
+        message: "Missing name, description, and completed",
       });
     } else if (!updatedProject) {
       res.status(404).json({

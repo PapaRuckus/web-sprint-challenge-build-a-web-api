@@ -33,4 +33,23 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+router.post("/", (req, res) => {
+  const { notes, description, project_id } = req.body;
+  if (!notes || !description || !project_id) {
+    return res.status(400).json({
+      message: "Please provide notes and description",
+    });
+  } else {
+    Actions.insert({ notes, description, project_id })
+      .then((action) => {
+        res.status(201).json(action);
+      })
+      .catch((err) => {
+        res.status(500).json({
+          message: "this is where you want to be",
+        });
+      });
+  }
+});
+
 module.exports = router;
