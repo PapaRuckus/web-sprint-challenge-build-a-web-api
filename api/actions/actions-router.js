@@ -1,5 +1,6 @@
 const express = require("express");
 const Actions = require("./actions-model");
+const validateUserId = require("./actions-middlware");
 
 const router = express.Router();
 
@@ -15,19 +16,12 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", validateUserId, async (req, res) => {
   try {
-    const actionId = await Actions.get(req.params.id);
-    if (!actionId) {
-      res.status(404).json({
-        message: "Action ID not found.",
-      });
-    } else {
-      res.json(actionId);
-    }
+    res.json(req.actionId);
   } catch (error) {
     res.status(500).json({
-      message: "Oops! There was an error retrieving the action ID.",
+      message: "Oops! Something went wrong while processing the action.",
     });
   }
 });
