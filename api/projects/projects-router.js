@@ -6,8 +6,8 @@ const router = express.Router();
 
 router.get("/", (req, res) => {
   Project.get()
-    .then((stuff) => {
-      res.json(stuff);
+    .then((projects) => {
+      res.json(projects);
     })
     .catch((err) => {
       res.status(500).json({
@@ -85,23 +85,40 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-
-router.delete('/:id', async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
-    const project = await Project.get(req.params.id)
+    const project = await Project.get(req.params.id);
     if (!project) {
       res.status(404).json({
-        message: "The project with that ID does not exist"
-      })
+        message: "The project with that ID does not exist",
+      });
     } else {
-      await Project.remove(req.params.id)
-      res.json(project)
+      await Project.remove(req.params.id);
+      res.json(project);
     }
   } catch (error) {
     res.status(500).json({
-      message: "Whoops this is sad path delete"
-    })
- }
-})
+      message: "Whoops this is sad path delete",
+    });
+  }
+});
+
+router.get("/:id/actions", async (req, res) => {
+  try {
+    const project = await Project.get(req.params.id);
+    if (!project) {
+      res.status(404).json({
+        message: "The project with that ID does not exist",
+      });
+    } else {
+      const action = await Project.getProjectActions(req.params.id);
+      res.status(200).json(action);
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "uh oh",
+    });
+  }
+});
 
 module.exports = router;
