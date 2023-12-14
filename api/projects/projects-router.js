@@ -58,11 +58,7 @@ router.put("/:id", async (req, res) => {
     const { name, description, completed } = req.body;
     const updatedProject = await Project.get(req.params.id);
 
-    if (
-      name === undefined ||
-      description === undefined ||
-      completed === undefined
-    ) {
+    if (!name || !description || completed === undefined) {
       res.status(400).json({
         message: "Missing name, description, and/or completed",
       });
@@ -88,5 +84,24 @@ router.put("/:id", async (req, res) => {
     });
   }
 });
+
+
+router.delete('/:id', async (req, res) => {
+  try {
+    const project = await Project.get(req.params.id)
+    if (!project) {
+      res.status(404).json({
+        message: "The project with that ID does not exist"
+      })
+    } else {
+      await Project.remove(req.params.id)
+      res.json(project)
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Whoops this is sad path delete"
+    })
+ }
+})
 
 module.exports = router;
